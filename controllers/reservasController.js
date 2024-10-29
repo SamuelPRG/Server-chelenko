@@ -3,6 +3,7 @@ const Reserva = require('../models/reservaModel');
 const Stock = require('../models/stockModel');
 const { obtenerReservas } = require('../services/apiService');
 const { actualizarStockEnOTAs } = require('../services/otaService');
+const axios = require('axios').default;
 
 // Actualizar el stock por cada día en el rango de una reserva
 async function actualizarStockPorDias(room, checkIn, checkOut, cantidadReservada) {
@@ -64,12 +65,12 @@ async function sincronizarReservas() {
                 specialRequests: reserva.specialRequests
             });
 
+            //! crear nueva reserva en la base de datos por medio del endpoint
             await nuevaReserva.save();
 
             // Actualizamos el stock para el rango de fechas de la reserva
-            //! preguntar por cantidad reservada
-            await actualizarStockPorDias(reserva.room, reserva.checkIn, reserva.checkOut, reserva.cantidadReservada );
-        }
+            //! revisar
+            axios
 
         console.log('Reservas sincronizadas y stock actualizado correctamente');
     } catch (error) {
