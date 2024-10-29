@@ -1,7 +1,6 @@
 const moment = require('moment');
 const Reserva = require('../models/reservaModel');
 const { obtenerReservas } = require('../services/apiService');
-const { actualizarStockEnOTAs } = require('../services/otaService');
 const axios = require('axios');
 
 // Obtener reservas de la API y actualizar el stock en el sistema
