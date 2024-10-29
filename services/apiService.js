@@ -17,10 +17,10 @@ async function obtenerReservas() {
 }
 
 // Obtener el stock de habitaciones desde la API externa
-async function obtenerStock(habitacion, fecha) {
+async function obtenerStock(room, date) {
     try {
         const response = await axios.get(`${API_URL}/stock`, {
-            params: { habitacion, fecha },
+            params: { room, date },
             headers: {
                 Authorization: `Bearer ${API_TOKEN}`
             }
