@@ -1,50 +1,8 @@
 const moment = require('moment');
 const Reserva = require('../models/reservaModel');
-const Stock = require('../models/stockModel');
 const { obtenerReservas } = require('../services/apiService');
 const { actualizarStockEnOTAs } = require('../services/otaService');
-const axios = require('axios').default;
-
-// Actualizar el stock por cada día en el rango de una reserva
-async function actualizarStockPorDias(room, checkIn, checkOut, cantidadReservada) {
-    try {
-        const diasReservados = moment(checkOut).diff(moment(checkIn), 'days') + 1;
-
-        for (let i = 0; i < diasReservados; i++) {
-            const fecha = moment(checkIn).add(i, 'days').toDate();
-
-            let stock = await Stock.findOne({ room, fecha });
-
-            if (!stock) {
-                // Si no existe stock para ese día, inicializamos con stock predeterminado (ej: 10 habitaciones)
-                //!revisar esta parte del código
-                //!preguntar a jose
-                stock = new Stock({
-                    room,
-                    availableUnits: 10,
-                    date,
-                    actualizacion: new Date(),
-                });
-            }
-
-            // Reducimos el stock disponible si es suficiente
-            if (stock.availableUnits >= cantidadReservada) {
-                stock.availableUnits -= cantidadReservada;
-                stock.actualizacion = new Date();
-                await stock.save();
-            } else {
-                console.error(`Stock insuficiente para la fecha ${fecha.toISOString()} en la habitación ${habitacion}`);
-                return;
-            }
-        }
-
-        // Sincronizar el stock con las OTAs
-        await actualizarStockEnOTAs(room, checkIn, checkOut);
-    } catch (error) {
-        console.error('Error al actualizar el stock por días:', error);
-        throw error;
-    }
-}
+const axios = require('axios');
 
 // Obtener reservas de la API y actualizar el stock en el sistema
 async function sincronizarReservas() {
@@ -65,13 +23,10 @@ async function sincronizarReservas() {
                 specialRequests: reserva.specialRequests
             });
 
-            //! crear nueva reserva en la base de datos por medio del endpoint
-            await nuevaReserva.save();
+            // crear nueva reserva en la base de datos por medio del endpoint
+            axios.post ("http://chelenko-data.sa-east-1.elasticbeanstalk.com/api/reservations", nuevaReserva)
 
-            // Actualizamos el stock para el rango de fechas de la reserva
-            //! revisar
-            axios
-
+        }
         console.log('Reservas sincronizadas y stock actualizado correctamente');
     } catch (error) {
         console.error('Error durante la sincronización de reservas:', error);
