@@ -5,28 +5,30 @@ const { obtenerReservas } = require('../services/apiService');
 const { actualizarStockEnOTAs } = require('../services/otaService');
 
 // Actualizar el stock por cada día en el rango de una reserva
-async function actualizarStockPorDias(habitacion, fechaInicio, fechaFin, cantidadReservada) {
+async function actualizarStockPorDias(room, checkIn, checkOut, cantidadReservada) {
     try {
-        const diasReservados = moment(fechaFin).diff(moment(fechaInicio), 'days') + 1;
+        const diasReservados = moment(checkOut).diff(moment(checkIn), 'days') + 1;
 
         for (let i = 0; i < diasReservados; i++) {
-            const fecha = moment(fechaInicio).add(i, 'days').toDate();
+            const fecha = moment(checkIn).add(i, 'days').toDate();
 
-            let stock = await Stock.findOne({ habitacion, fecha });
+            let stock = await Stock.findOne({ room, fecha });
 
             if (!stock) {
                 // Si no existe stock para ese día, inicializamos con stock predeterminado (ej: 10 habitaciones)
+                //!revisar esta parte del código
+                //!preguntar a jose
                 stock = new Stock({
-                    habitacion,
-                    disponible: 10,
-                    fecha,
+                    room,
+                    availableUnits: 10,
+                    date,
                     actualizacion: new Date(),
                 });
             }
 
             // Reducimos el stock disponible si es suficiente
-            if (stock.disponible >= cantidadReservada) {
-                stock.disponible -= cantidadReservada;
+            if (stock.availableUnits >= cantidadReservada) {
+                stock.availableUnits -= cantidadReservada;
                 stock.actualizacion = new Date();
                 await stock.save();
             } else {
@@ -36,7 +38,7 @@ async function actualizarStockPorDias(habitacion, fechaInicio, fechaFin, cantida
         }
 
         // Sincronizar el stock con las OTAs
-        await actualizarStockEnOTAs(habitacion, fechaInicio, fechaFin);
+        await actualizarStockEnOTAs(room, checkIn, checkOut);
     } catch (error) {
         console.error('Error al actualizar el stock por días:', error);
         throw error;
@@ -50,19 +52,23 @@ async function sincronizarReservas() {
 
         for (const reserva of reservas) {
             const nuevaReserva = new Reserva({
-                ota: reserva.ota,
-                idReserva: reserva.id,
-                fechaInicio: reserva.fechaInicio,
-                fechaFin: reserva.fechaFin,
-                habitacion: reserva.habitacion,
-                cantidad: reserva.cantidad,
-                totalPagado: reserva.totalPagado,
+
+                bookingReference: reserva.bookingReference,
+                guest: reserva.guest,
+                room: reserva.room,
+                checkIn: reserva.checkIn,
+                checkOut: reserva.checkOut,
+                totalPrice: reserva.totalPrice,
+                channel: reserva.channel,
+                channelReference: reserva.channelReference,
+                specialRequests: reserva.specialRequests
             });
 
             await nuevaReserva.save();
 
             // Actualizamos el stock para el rango de fechas de la reserva
-            await actualizarStockPorDias(reserva.habitacion, reserva.fechaInicio, reserva.fechaFin, reserva.cantidad);
+            //! preguntar por cantidad reservada
+            await actualizarStockPorDias(reserva.room, reserva.checkIn, reserva.checkOut, reserva.cantidadReservada );
         }
 
         console.log('Reservas sincronizadas y stock actualizado correctamente');

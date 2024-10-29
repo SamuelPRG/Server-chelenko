@@ -1,15 +1,25 @@
-const mongoose = require('mongoose');
+class Reserva {
+    constructor({
+        bookingReference,
+        guest,
+        room,
+        checkIn,
+        checkOut,
+        totalPrice,
+        channel,
+        channelReference,
+        specialRequests
+    }) {
+        this.bookingReference = bookingReference;
+        this.guest = guest;
+        this.room = room;
+        this.checkIn = new Date(checkIn);
+        this.checkOut = new Date(checkOut);
+        this.totalPrice = totalPrice;
+        this.channel = channel;
+        this.channelReference = channelReference;
+        this.specialRequests = specialRequests;
+    }
+}
 
-const reservaSchema = new mongoose.Schema({
-    bookingReference: String,
-    guest: String,
-    room: String,
-    checkIn: Date,
-    checkOut: Date,
-    totalPrice: Number,
-    channel: String,
-    channelReference: String,
-    specialRequests: String,
-});
-
-module.exports = mongoose.model('Reserva', reservaSchema);
+module.exports = Reserva;

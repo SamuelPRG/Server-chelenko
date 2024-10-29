@@ -1,15 +1,24 @@
-const mongoose = require('mongoose');
+class Stock {
+    constructor({
+        room,
+        date,
+        availableUnits,
+        price,
+        restrictions,
+        channel
+    }) {
+        this.room = room;
+        this.date = new Date(date);
+        this.availableUnits = availableUnits;
+        this.price = price;
+        this.restrictions = {
+            minStay: restrictions?.minStay || 1,
+            maxStay: restrictions?.maxStay || 30,
+            closedToArrival: restrictions?.closedToArrival || false,
+            closedToDeparture: restrictions?.closedToDeparture || false
+        };
+        this.channel = channel;
+    }
+}
 
-const stockSchema = new mongoose.Schema({
-    bookingReference: String,
-    guest: String,
-    room: String,
-    checkIn: Date,
-    checkOut: Date,
-    totalPrice: Number,
-    channel: String,
-    channelReference: String,
-    specialRequests: String,
-});
-
-module.exports = mongoose.model('Stock', stockSchema);
+module.exports = Stock;
