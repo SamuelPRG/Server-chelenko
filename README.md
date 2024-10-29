@@ -15,3 +15,6 @@ project-root
 ├── index.js                    // Punto de entrada del servidor
 ├── config.js                   // Configuración de la API y base de datos
 ```
+
+
+
