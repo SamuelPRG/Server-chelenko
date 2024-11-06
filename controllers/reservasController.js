@@ -33,4 +33,7 @@ async function sincronizarReservas() {
     }
 }
 
+axios.post('http://chelenko-data.sa-east-1.elasticbeanstalk.com/api/reservations', nuevaReserva)   .then(response => {     console.log("Reserva creada:", response.data);   })  .catch(error => {     console.error("Error al crear la reserva:", error.response ? error.response.data : error.message); });
+
+
 module.exports = { sincronizarReservas };
