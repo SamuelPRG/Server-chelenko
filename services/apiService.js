@@ -4,7 +4,7 @@ const { API_URL, API_TOKEN } = require('../config');
 // Obtener reservas desde la API externa
 async function obtenerReservas() {
     try {
-        const response = await axios.get(`${API_URL}/reservas`, {
+        const response = await axios.get(`http://chelenko-data.sa-east-1.elasticbeanstalk.com/api/guests`, {
             headers: {
                 Authorization: `Bearer ${API_TOKEN}`
             }
