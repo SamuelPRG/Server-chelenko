@@ -1,4 +1,9 @@
 const axios = require('axios');
+
+/*
+ACA DEBERIA ESTAR EL ENDPOINT DEL SITIO COMO OTA QUE ENVIA LAS NUEVAS RESERVAS,
+ESTO REEMPLAZARIA EL JSON DE ABAJO
+*/
 const nuevaReservaOta = {
     "bookingReference": "GRUPO1OTA",
     "guest": "605c72ef5f7e2d3db4f1baf7",  // Debe ser un ObjectId válido de un huésped
