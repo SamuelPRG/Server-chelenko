@@ -5,7 +5,7 @@ ACA DEBERIA ESTAR EL ENDPOINT DE BOOKING QUE ENVIA LAS NUEVAS RESERVAS,
 ESTO REEMPLAZARIA EL JSON DE ABAJO
 */
 const nuevaReservaBooking = {
-    "bookingReference": "GRUPO1BOOKING",
+    "bookingReference": "Demostracion",
     "guest": "605c72ef5f7e2d3db4f1baf7", 
     "room": "605c72ef5f7e2d3db4f1baf8",
     "checkIn": "2024-10-01T14:00:00Z",
